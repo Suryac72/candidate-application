@@ -4,6 +4,8 @@
 In this application, I used mentioned tech-stack which is used to implement it. I made UI responsive in nature and implement all functionality which is mentioned in problem statement.
 It has functionality of infinite scroll as well as search functionality on jobs
 
+NOTE: I try to implement all the things mentioned but some small points may be missed because there is some electricity outage in my area.
+
 ## Getting Started
 
 ### Prerequisites
