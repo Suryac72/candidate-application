@@ -40,30 +40,39 @@ const Dashboard = () => {
 
   const filteredParameters = Object.values(filters);
 
+  /**
+   * Filter data based on search values
+   */
   const filteredResponse = jobsData[0].filter((job) => {
-    if (filteredParameters[0].role.length) {
-      return filteredParameters[0].role.includes(job.jobRole);
-    }
-    if (filteredParameters[0].companyName)
-      return (
-        job.companyName.toLowerCase() ===
-        filteredParameters[0].companyName.toLowerCase()
-      );
-    if (filteredParameters[0].numberOfEmployees) {
-      return filteredParameters[0].numberOfEmployees
-        .map((employees) => Number(employees.split("-")[0]))
-        .includes(job.employees);
-    }
-    if (filteredParameters[0].jobType) {
-      return filteredParameters[0].jobType.includes(job.location);
-    }
-    if (filteredParameters[0].experience)
-      return filteredParameters[0].experience.includes(job.minExp);
-    if (filteredParameters[0].salary) {
-      return filteredParameters[0].salary
-        .map((salary) => Number(salary.charAt(0)))
-        .includes(job.minJdSalary);
-    } else return true;
+    return filteredParameters.every((filter) => {
+      if (filter.jobType.length > 0) {
+        return filter.jobType.includes(job.location);
+      }
+      if (filter.role.length) {
+        return filter.role.includes(job.jobRole);
+      }
+      if (filter.companyName) {
+        return (
+          job.companyName.toLowerCase() === filter.companyName.toLowerCase()
+        );
+      }
+      if (filter.numberOfEmployees.length) {
+        return filter.numberOfEmployees
+          .map((employees) => {
+            const range = employees.split("-");
+            return job.employees >= Number(range[0]) && job.employees <= Number(range[1]);
+          })
+          .includes(true);
+      }
+      if (filter.experience.length) {
+        return filter.experience.includes(job.minExp);
+      }
+      if (filter.salary.length) {
+        const filteredSalaries = filter.salary.map((salary) => Number(salary.replace('L','')));
+        return filteredSalaries.some((salary) => salary >= job.minJdSalary && salary <= job.maxJdSalary);
+      }
+      return true; 
+    });
   });
 
   const jobDetailsResponse = jobDetailsData.pages.map((jobDetails) =>
@@ -94,7 +103,7 @@ const Dashboard = () => {
         <SearchFilter handleFilterChange={handleFilterChange} />
       </Grid>
       <Grid container spacing={5} justifyContent="center" alignItems="center">
-        {filteredResponse.length 
+        {filteredResponse.length
           ? filteredResponse.map((job, key) => {
               return (
                 <Grid item key={key}>

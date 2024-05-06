@@ -86,7 +86,7 @@ const JobCard = ({
           Minimum Experience
         </Typography>
         <Typography variant="body1" className="experience-info">
-          5 years
+          {`${minExp ?? 0} years`}
         </Typography>
         <div className="button-container">
           <Button
